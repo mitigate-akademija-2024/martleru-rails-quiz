@@ -1,3 +1,4 @@
+#Model naming is always in SINGULAR!
 class Quiz < ApplicationRecord
   validates :title, presence: true, uniqueness: true
 
