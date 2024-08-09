@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
   root to: "quizzes#index"
+  
   get "/start_quiz", to: "quizzes#start"
 
   resources :quizzes do 
-    resources :questions, shallow: true
+    resources :questions, shallow: true do
+      resources :answers, shallow: true
+    end
 
     get "continue", on: :member
     get "completed", on: :collection

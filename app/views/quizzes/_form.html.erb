@@ -1,4 +1,5 @@
 <%= form_with(model: quiz) do |form| %>
+
   <% if quiz.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(quiz.errors.count, "error") %> prohibited this quiz from being saved:</h2>
@@ -10,7 +11,6 @@
       </ul>
     </div>
   <% end %>
-
   <div>
     <%= form.label :title, style: "display: block" %>
     <%= form.text_field :title %>

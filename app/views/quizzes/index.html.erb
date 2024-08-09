@@ -1,15 +1,33 @@
 <p style="color: green"><%= notice %></p>
+<%= link_to "Create new Quiz", new_quiz_path, class: get_btn_class %>
 
 <h1> <%= @title %> </h1>
 <p> <%= @description %> </p>
 
-<div id="quizzes">
-  <% @quizzes.each do |quiz| %>
-    <%= render quiz %>
-    <p>
-      <%= link_to "Show this quiz", quiz %>
-    </p>
-  <% end %>
-</div>
 
-<%= link_to "New quiz", new_quiz_path %>
+  <div id="quizzes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+    <% @quizzes.each do |quiz| %>
+      <div class="flex flex-col justify-between p-4 rounded-md bg-white">  
+          <%= render "quiz_card", quiz: quiz %>
+      </div>
+    <% end %>
+  </div>
+
+
+<!--
+<div class="overflow-x-auto rounded-lg border border-gray-200">
+  <table id="quizzes" class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+    <thead class="text-left">
+      <tr>
+        <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ID</th>
+        <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Nosaukums</th>
+        <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Apraksts</th>
+        <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Izveidots</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <%= render partial: 'quiz_row', collection: @quizzes, as: :quiz %>
+    </tbody>
+  </table>
+</div>
+-->
