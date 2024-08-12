@@ -1,0 +1,17 @@
+<h1>Take the Quiz: <%= @quiz.title %></h1>
+
+<%= form_with url: submit_quiz_quiz_path(@quiz), method: :post do %>
+  <% @quiz.questions.each do |question| %>
+    <fieldset>
+      <legend><%= question.question_text %></legend>
+      <% question.answers.each do |answer| %>
+        <div>
+          <%= radio_button_tag "answers[#{question.id}]", answer.id %>
+          <%= label_tag "answers_#{question.id}_#{answer.id}", answer.answer_text %>
+        </div>
+      <% end %>
+    </fieldset>
+  <% end %>
+
+  <%= submit_tag "Submit Quiz" %>
+<% end %>
