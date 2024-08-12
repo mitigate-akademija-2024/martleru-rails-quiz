@@ -1,4 +1,31 @@
-<h1>Quiz Results: <%= @quiz.title %></h1>
-<p>Your score: <%= @user_score.score %></p>
+<h3 class="text-2xl font-semibold mb-6">Quiz questions (<%= @quiz.questions.size %>)</h3>
+<div class="space-y-6">
+  <% @quiz.questions.each do |question| %>
+    <div class="p-4 rounded-lg border border-gray-900 bg-white shadow-sm">
+      <div class="flex justify-between items-start">
+        <div>
+          <h4 class="text-xl font-bold text-gray-900"><%= question.question_text %></h4>
+        </div>
+      </div>
 
-<%= link_to 'Back to Quizzes', quizzes_path %>
+      <ul class="mt-2 flex flex-wrap justify-between">
+        <% question.answers.each do |answer| %>
+          <li class="w-full md:w-1/2 lg:w-1/4 p-2">
+            <div class="flex items-center justify-center h-full p-4 border border-gray-300 rounded-lg
+              <%= answer.id.to_s == @user_score.answers[question.id.to_s] ? (answer.correct ? 'bg-green-100' : 'bg-red-100') : (answer.correct ? 'bg-green-50' : 'bg-gray-100') %>">
+              <p class="text-gray-700
+                <%= answer.id.to_s == @user_score.answers[question.id.to_s] ? (answer.correct ? 'font-semibold text-green-600' : 'font-semibold text-red-600') : (answer.correct ? 'font-semibold text-green-600' : 'text-gray-700') %>">
+                <%= answer.answer_text %>
+              </p>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
+<div class="mt-10">
+ <%= link_to "Export Results to CSV", export_results_quiz_path(@quiz), class: "inline-block rounded-md border border-indigo-600 bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+  <%= link_to "Back to Quiz", play_quiz_quiz_path(@quiz), class: "inline-block rounded-md border border-gray-300 bg-gray-100 px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300" %>
+</div>

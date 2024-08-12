@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     get 'play_quiz', on: :member
     post "submit_quiz", on: :member
     get 'results', on: :member
+    get 'export_results', on: :member 
   end
-
   get "up" => "rails/health#show", as: :rails_health_check
 end
