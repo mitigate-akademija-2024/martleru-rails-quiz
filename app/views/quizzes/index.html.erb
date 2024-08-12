@@ -1,17 +1,33 @@
-<p style="color: green"><%= notice %></p>
-<%= link_to "Create new Quiz", new_quiz_path, class: get_btn_class %>
+<article class="px-4 py-4">
+  <% if notice.present? %>
+    <p class="mb-4 p-2 text-green-800 bg-green-100 border border-green-300 rounded-lg">
+      <%= notice %>
+    </p>
+  <% end %>
 
-<h1> <%= @title %> </h1>
-<p> <%= @description %> </p>
+  <header class="pb-4 border-b border-gray-300 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl md:text-4xl lg:text-6xl font-extrabold text-gray-800 mb-2">
+        <%= @title %>
+      </h1>
+      <p class="text-sm md:text-base lg:text-lg text-gray-600">
+        <%= @description %>
+      </p>
+    </div>
+  </header>
 
+  <section class="mt-8">
+    <div class="pb-10">
+      <%= link_to "Create Quiz", new_quiz_path, class: get_add_btn_class %>
+    </div>
+    <div id="quizzes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <% @quizzes.each do |quiz| %>
+        <%= render "quiz_card", quiz: quiz %>
+      <% end %>
+    </div>
+  </section>
+</article>
 
-  <div id="quizzes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
-    <% @quizzes.each do |quiz| %>
-      <div class="flex flex-col justify-between p-4 rounded-md bg-white">  
-          <%= render "quiz_card", quiz: quiz %>
-      </div>
-    <% end %>
-  </div>
 
 
 <!--
@@ -30,4 +46,7 @@
     </tbody>
   </table>
 </div>
+
+<%= link_to "Create new Quiz", new_quiz_path, class: get_btn_class %>
+
 -->

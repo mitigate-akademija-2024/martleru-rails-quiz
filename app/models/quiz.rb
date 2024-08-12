@@ -8,6 +8,12 @@ class Quiz < ApplicationRecord
 
   has_many :questions, dependent: :destroy
 
+  belongs_to :user
+
+  def owned_by?(user)
+    self.user == user
+  end
+  
   protected
 
   def normalize_title
@@ -20,3 +26,4 @@ class Quiz < ApplicationRecord
     self.description = description.to_s.squish
   end
 end
+

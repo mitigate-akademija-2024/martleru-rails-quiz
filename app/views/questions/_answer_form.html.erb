@@ -1,0 +1,12 @@
+ 
+ 
+   <li class="nested-form-wrapper" data-new-record="<%= form.object.new_record? %>">
+        <%= form.text_field :answer_text %>
+    
+        <%= form.label :correct, 'Mark Correct' %>
+        <%= form.check_box :correct %>
+
+         <button type="button" data-action="nested-form#remove">Remove</button>
+
+            <%= form.hidden_field :_destroy %>
+      </li>

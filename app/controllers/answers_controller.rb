@@ -14,7 +14,7 @@ class AnswerController < ApplicationController
         flash.notice = "Something"
         redirect_to quiz_url(@quiz)
       else
-  
+        flash.now.alert = @question.errors.full_messages.to_sentence
       end 
     end
   
@@ -23,7 +23,6 @@ class AnswerController < ApplicationController
     end
   
     def set_answer
-        puts "set_answers metode"
         @answer = Answer.find(params[:quiz_id])
     end
   

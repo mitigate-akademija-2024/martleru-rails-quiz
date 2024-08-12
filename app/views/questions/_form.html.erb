@@ -2,35 +2,47 @@
 /quizzes/:id/questions
  -->
 
-<%= form_with(model: question.persisted? ? question : [question.quiz, question]) do |form| %>
-  <% if question.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(question.errors.count, "error") %> prohibited this question from being saved:</h2>
+<%= form_with(model: question.persisted? ? question : [question.quiz, question], data: { controller: 'nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper' }, class: "bg-white p-6 rounded-lg shadow-md") do |form| %>
 
-      <ul>
+  <!-- Error Messages 
+  <% if question.errors.any? %>
+    <div class="mb-4 p-4 border border-red-300 rounded bg-red-50 text-red-700">
+      <h2 class="text-lg font-semibold"><%= pluralize(question.errors.count, "error") %> prohibited this question from being saved:</h2>
+      <ul class="mt-2 list-disc list-inside">
         <% question.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
-
-  <div>
-    <%= form.label :question_text %>
-    <%= form.text_field :question_text %>
-
-    <%= form.fields_for :answers do |ff| %>
-      <li>
-        <%= ff.text_field :answer_text %>
-    
-        <%= ff.label :correct, 'Mark Correct' %>
-        <%= ff.check_box :correct %>
-      </li>
+  -->
+  
+  <!-- Template for Adding Answers -->
+  <template data-nested-form-target="template">
+    <%= form.fields_for :answers, Answer.new, child_index: 'NEW_RECORD' do |answer_fields| %>
+      <%= render "answer_form", form: answer_fields %>
     <% end %>
+  </template>
+
+  <div class="mb-6">
+    <%= form.label :question_text, class: "block text-sm font-medium text-gray-700 mb-2" %>
+    <%= form.text_field :question_text, placeholder: "Enter your question here", class: "w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2" %>
   </div>
 
-  <div class="mt-4">
-    <%= form.submit %>
-    <%= form.submit :add_answer %>
+  <!-- Answer Fields -->
+    <%= form.fields_for :answers do |ff| %>
+      <%= render "answer_form", form: ff %>
+    <% end %>
+
+    <div data-nested-form-target="target" class="space-y-4"></div>
+
+    <button type="button" data-action="nested-form#add" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+      Add Answer
+    </button>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="mt-6">
+    <%= form.submit "Save Question", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
   </div>
 <% end %>

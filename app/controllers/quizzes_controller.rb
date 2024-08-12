@@ -1,10 +1,10 @@
 class QuizzesController < ApplicationController
+  # before_action :authenticate_user! 
   before_action :set_quiz, only: %i[ show edit update destroy ]
 
-  # GET /quizzes or /quizzes.json
   def index
-    @title = "Available Quizzes"
-    @description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor enim id mi efficitur, at suscipit justo tristique. Sed finibus."
+    @title = "Quick Quiz Challenge"
+    @description = "Test your knowledge with our fun and engaging quizzes! Whether you're brushing up on trivia or challenging yourself with new topics, our quizzes are designed to be both educational and entertaining. Dive in and see how much you can score!"
 
     @quizzes = Quiz.all
   end
@@ -21,39 +21,36 @@ class QuizzesController < ApplicationController
     end
   end
 
-  # GET /quizzes/1 or /quizzes/1.json
   def show
   end
 
-  # GET /quizzes/new
   def new
     @quiz = Quiz.new
   end
 
-  # GET /quizzes/1/edit
   def edit
   end
 
-  # POST /quizzes or /quizzes.json
   def create
     @quiz = Quiz.new(quiz_params)
-
+    @quiz.user = current_user
+  
     respond_to do |format|
       if @quiz.save
         format.html do
-          flash.notice = "Quiz was successfully created this time."
+          flash.notice = "Quiz was successfully created."
           redirect_to quiz_url(@quiz)
         end
         format.json { render :show, status: :created, location: @quiz }
       else
-        flash.now.alert = 'Something went wrong'
+        flash.now.alert = @quiz.errors.full_messages.to_sentence
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @quiz.errors, status: :unprocessable_entity }
       end
     end
   end
-
-  # PATCH/PUT /quizzes/1 or /quizzes/1.json
+  
+  
   def update
     respond_to do |format|
       if @quiz.update(quiz_params)
@@ -69,20 +66,21 @@ class QuizzesController < ApplicationController
   # DELETE /quizzes/1 or /quizzes/1.json
   def destroy
     @quiz.destroy!
+    redirect_to quizzes_url, notice: "Quiz was successfully deleted."
 
-    respond_to do |format|
-      format.html { redirect_to quizzes_url, notice: "Quiz was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    
+    # You can respond to vaious formats. .json will send a json
+    # respond_to do |format|
+    #   format.html { redirect_to quizzes_url, notice: "Quiz was successfully deleted." }
+    #   format.json { head :no_content }
+    # end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_quiz
       @quiz = Quiz.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def quiz_params
       params.require(:quiz).permit(:title, :description)
     end

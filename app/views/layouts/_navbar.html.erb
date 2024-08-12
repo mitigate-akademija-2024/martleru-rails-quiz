@@ -1,0 +1,24 @@
+<header class="bg-gray-800 p-4">
+  <nav class="container mx-auto flex justify-between items-center">
+    <div class="text-white text-lg font-semibold">
+      <%= link_to "YourAppName", root_path, class: "hover:text-gray-300" %>
+    </div>
+    <ul class="flex space-x-4">
+      <% if user_signed_in? %>
+        <li>
+          <%= link_to "Profile", edit_user_registration_path, class: "text-white hover:text-gray-300" %>
+        </li>
+       <li>
+        <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "text-white hover:text-gray-300" %>
+        </li>
+      <% else %>
+        <li>
+          <%= link_to "Sign Up", new_user_registration_path, class: "text-white hover:text-gray-300" %>
+        </li>
+        <li>
+          <%= link_to "Login", new_user_session_path, class: "text-white hover:text-gray-300" %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+</header>

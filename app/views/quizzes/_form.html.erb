@@ -1,27 +1,24 @@
-<%= form_with(model: quiz) do |form| %>
+<%= form_with(model: quiz, class: "#{get_form_class} bg-white p-6 rounded-lg shadow-md") do |form| %>
 
-  <% if quiz.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(quiz.errors.count, "error") %> prohibited this quiz from being saved:</h2>
-
-      <ul>
-        <% quiz.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
+  <!-- Formas title - tiek padots kā "local" -->
+  <% if form_action == "create" %>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Create a New Quiz</h1>
+  <% elsif form_action == "edit" %>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Quiz</h1>
   <% end %>
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+
+  <div class="mb-4">
+    <%= form.label :title, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.text_field :title, placeholder: "Enter quiz title", class: "w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2" %>
   </div>
 
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.text_field :description %>
+  <div class="mb-6">
+    <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= form.text_area :description, placeholder: "Tell us what your quiz is about...", class: "w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2 min-h-[150px]" %>
   </div>
-
-  <div>
-    <%= form.submit %>
+  
+  <div class="flex justify-between items-center">
+    <%= link_to "Cancel", quizzes_path, class: get_btn_class %>
+    <%= form.submit "Save", class: get_btn_class%>
   </div>
 <% end %>
