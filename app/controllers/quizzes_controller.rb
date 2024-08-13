@@ -1,8 +1,7 @@
-require 'csv'
-
 class QuizzesController < ApplicationController
   before_action :set_quiz, only: %i[show edit update destroy play_quiz submit_quiz results export_results]
-  # before_action :authenticate_user!, except: [:index, :show]
+  before_action :ensure_quiz_has_questions, only: [:play_quiz, :submit_quiz, :results, :export_results]
+  before_action :authenticate_user!, except: [:index, :show, :play_quiz, :submit_quiz, :results, :export_results]
 
   # GET /quizzes
   def index
@@ -79,23 +78,27 @@ class QuizzesController < ApplicationController
       score += 1 if answer&.correct
     end
   
-    user = current_user
-    @user_score = UserScore.find_or_initialize_by(quiz: @quiz, user: user)
+    user = current_user || find_anonymous_user
   
-    if @user_score.update(score: score, answers: answers_params)
-      redirect_to results_quiz_path(@quiz), notice: "Your score: #{score}"
+    @user_score = UserScore.new(quiz: @quiz, user: user, score: score, answers: answers_params)
+  
+    if @user_score.save
+      redirect_to results_attempt_quiz_path(@quiz, attempt_id: @user_score.id)
     else
       redirect_to play_quiz_path(@quiz), alert: "There was an error recording your score."
     end
   end
-
+  
   # GET /quizzes/:id/results
   def results
-    @user_score = UserScore.find_by(quiz: @quiz, user: current_user) ||
-                  UserScore.find_by(quiz: @quiz, user: nil)
-    @questions = @quiz.questions.includes(:answers)
+    @user_score = UserScore.find_by(id: params[:attempt_id])
+    if @user_score && @user_score.quiz_id == @quiz.id
+      @questions = @quiz.questions.includes(:answers)
+    else
+      redirect_to play_quiz_quiz_path(@quiz), alert: "Results not found."
+    end
   end
-
+  
   # GET /quizzes/:id/export_results
   def export_results
     @user_score = UserScore.find_by(quiz: @quiz, user: current_user)
@@ -126,12 +129,22 @@ class QuizzesController < ApplicationController
 
   private
 
-  # Set the quiz for actions requiring a quiz
   def set_quiz
     @quiz = Quiz.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+    redirect_to quizzes_path, alert: "Quiz not found."
   end
 
-  # Strong parameters for quiz
+  def find_anonymous_user
+    User.find_by(email: "anonymous@mitigate.dev")
+  end
+
+  def ensure_quiz_has_questions
+    unless @quiz.questions.exists?
+      redirect_to quizzes_path, alert: "This quiz has no questions."
+    end
+  end
+
   def quiz_params
     params.require(:quiz).permit(:title, :description)
   end
