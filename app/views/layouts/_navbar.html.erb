@@ -1,15 +1,18 @@
-<header class="bg-gray-800 p-4">
+<header class="bg-gray-800 px-4 py-10 relative z-20">
   <nav class="container mx-auto flex justify-between items-center">
     <div class="text-white text-lg font-semibold">
-      <%= link_to "YourAppName", root_path, class: "hover:text-gray-300" %>
+      <%= link_to "Quizzes on Rails", root_path, class: "hover:text-gray-300" %>
     </div>
     <ul class="flex space-x-4">
       <% if user_signed_in? %>
+        <li class="text-white">
+          <%= link_to "Welcome, #{current_user.email}", user_path(current_user), class: "hover:text-gray-300" %>
+        </li>
         <li>
           <%= link_to "Profile", edit_user_registration_path, class: "text-white hover:text-gray-300" %>
         </li>
-       <li>
-        <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "text-white hover:text-gray-300" %>
+        <li>
+          <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "text-white hover:text-gray-300" %>
         </li>
       <% else %>
         <li>

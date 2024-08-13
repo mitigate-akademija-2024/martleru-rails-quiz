@@ -14,9 +14,13 @@
   </head>
 
   <!-- This works as layouts in JS-Framewroks, if I add anything here it will be visible within other views. -->
-  <body class="container mx-auto p-4">
-    <%= render 'layouts/navbar' %>
-    <%= render "layouts/notice" %>
-    <%= yield %>
+  <body>
+    <%= render 'layouts/navbar', user: current_user %>
+    <main class="container mx-auto relative pt-16">
+      <div class="absolute top-5 flex justify-center w-full z-20">
+        <%= render "layouts/notice" %>
+      </div>
+      <%= yield %>
+    </main>
   </body>
 </html>
