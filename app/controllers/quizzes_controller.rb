@@ -1,3 +1,5 @@
+require 'csv'
+
 class QuizzesController < ApplicationController
   before_action :set_quiz, only: %i[show edit update destroy play_quiz submit_quiz results export_results]
   before_action :ensure_quiz_has_questions, only: [:play_quiz, :submit_quiz, :results, :export_results]
@@ -27,6 +29,12 @@ class QuizzesController < ApplicationController
 
   # GET /quizzes/:id/edit
   def edit
+    @user = current_user
+    @quiz = Quiz.find(params[:id])
+  
+    unless @user.quizzes.include?(@quiz)
+      redirect_to root_path, alert: "You are not authorized to edit this quiz."
+    end
   end
 
   # POST /quizzes
@@ -47,6 +55,13 @@ class QuizzesController < ApplicationController
 
   # PATCH/PUT /quizzes/:id
   def update
+    @quiz = Quiz.find(params[:id])
+  
+    unless current_user.quizzes.include?(@quiz)
+      redirect_to root_path, alert: "You are not authorized to update this quiz."
+      return
+    end
+  
     respond_to do |format|
       if @quiz.update(quiz_params)
         format.html { redirect_to @quiz, notice: "Quiz was successfully updated." }
@@ -57,6 +72,7 @@ class QuizzesController < ApplicationController
       end
     end
   end
+  
 
   # DELETE /quizzes/:id
   def destroy
@@ -101,7 +117,7 @@ class QuizzesController < ApplicationController
   
   # GET /quizzes/:id/export_results
   def export_results
-    @user_score = UserScore.find_by(quiz: @quiz, user: current_user)
+    @user_score = UserScore.find_by(quiz: @quiz)
 
     if @user_score
       csv_data = CSV.generate(headers: true) do |csv|
