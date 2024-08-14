@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_13_080203) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_14_081441) do
   create_table "answers", force: :cascade do |t|
     t.string "answer_text", null: false
     t.boolean "correct", default: false, null: false
@@ -34,7 +34,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_080203) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.boolean "published", default: false
     t.index ["user_id"], name: "index_quizzes_on_user_id"
+  end
+
+  create_table "testimonials", force: :cascade do |t|
+    t.integer "quiz_id", null: false
+    t.integer "user_id", null: false
+    t.string "testimonial_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["quiz_id"], name: "index_testimonials_on_quiz_id"
+    t.index ["user_id"], name: "index_testimonials_on_user_id"
   end
 
   create_table "user_scores", force: :cascade do |t|
@@ -65,6 +76,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_080203) do
   add_foreign_key "answers", "questions"
   add_foreign_key "questions", "quizzes"
   add_foreign_key "quizzes", "users"
+  add_foreign_key "testimonials", "quizzes"
+  add_foreign_key "testimonials", "users"
   add_foreign_key "user_scores", "quizzes"
   add_foreign_key "user_scores", "users"
 end

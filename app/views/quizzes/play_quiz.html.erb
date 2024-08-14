@@ -1,17 +1,43 @@
-<h1>Take the Quiz: <%= @quiz.title %></h1>
+<section class="px-4 py-4">
+  <h1 class="text-3xl font-bold mb-8">Take the Quiz: <%= @quiz.title %></h1>
 
-<%= form_with url: submit_quiz_quiz_path(@quiz), method: :post do %>
-  <% @quiz.questions.each do |question| %>
-    <fieldset>
-      <legend><%= question.question_text %></legend>
-      <% question.answers.each do |answer| %>
-        <div>
-          <%= radio_button_tag "answers[#{question.id}]", answer.id %>
-          <%= label_tag "answers_#{question.id}_#{answer.id}", answer.answer_text %>
+  <%= form_with url: submit_quiz_quiz_path(@quiz), method: :post, class: "space-y-6" do %>
+    <% @quiz.questions.each do |question| %>
+      <fieldset class="border border-gray-300 rounded-lg p-6">
+        <legend class="text-xl font-semibold mb-4"><%= question.question_text %></legend>
+        <div class="flex flex-wrap gap-4">
+          <% question.answers.each do |answer| %>
+            <div class="answer-option flex items-center flex-grow min-w-[200px] space-x-2 border border-gray-300 rounded-lg bg-gray-100 p-2 cursor-pointer" data-question-id="<%= question.id %>">
+              <%= radio_button_tag "answers[#{question.id}]", answer.id, id: "answer_#{question.id}_#{answer.id}", class: "hidden" %>
+              <%= label_tag "answer_#{question.id}_#{answer.id}", answer.answer_text, class: "text-lg flex-grow" %>
+            </div>
+          <% end %>
         </div>
-      <% end %>
-    </fieldset>
-  <% end %>
+      </fieldset>
+    <% end %>
 
-  <%= submit_tag "Submit Quiz" %>
-<% end %>
+    <div class="flex justify-center mt-6">
+      <%= submit_tag "Submit Quiz", class: "bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+  <% end %>
+</section>
+
+<script>
+  document.querySelectorAll('.answer-option').forEach(function(option) {
+    option.addEventListener('click', function() {
+      const questionId = this.getAttribute('data-question-id');
+
+      // Find all options within the same question
+      document.querySelectorAll(`.answer-option[data-question-id="${questionId}"]`).forEach(function(o) {
+        o.classList.remove('bg-green-100');
+        o.classList.add('bg-gray-100');
+      });
+
+      // Check if the clicked option's radio button is selected
+      if (this.querySelector('input[type=radio]').checked) {
+        this.classList.add('bg-green-100');
+        this.classList.remove('bg-gray-100');
+      }
+    });
+  });
+</script>

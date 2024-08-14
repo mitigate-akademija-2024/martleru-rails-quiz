@@ -1,12 +1,18 @@
- 
- 
-   <li class="nested-form-wrapper" data-new-record="<%= form.object.new_record? %>">
-        <%= form.text_field :answer_text %>
-    
-        <%= form.label :correct, 'Mark Correct' %>
-        <%= form.check_box :correct %>
+<div class="nested-form-wrapper flex items-center justify-between p-4 border border-gray-300 rounded-lg shadow-sm bg-white" data-new-record="<%= form.object.new_record? %>">
+  <div class="flex-grow">
+    <%= form.text_field :answer_text, placeholder: "Enter answer text", 
+                        class: "w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2" %>
+  </div>
 
-         <button type="button" data-action="nested-form#remove">Remove</button>
+  <div class="flex items-center ml-4 space-x-4">
+    <%= form.check_box :correct, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" %>
+    <%= form.label :correct, 'Mark Correct', class: "text-sm font-medium text-gray-700" %>
+  </div>
 
-            <%= form.hidden_field :_destroy %>
-      </li>
+  <button type="button" data-action="nested-form#remove" 
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+    <%= raw destroy_quiz_svg(18, 18) %> 
+  </button>
+
+  <%= form.hidden_field :_destroy %>
+</div>

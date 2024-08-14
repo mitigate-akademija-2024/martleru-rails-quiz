@@ -1,0 +1,27 @@
+<% if paginator.total_pages > 1 %>
+  <div class="pagination flex justify-between items-center mt-4">
+    <% param_name = paginator_param_name %>
+
+    <% if paginator.prev_page %>
+      <%= link_to 'Previous', url_for(params.to_unsafe_h.merge(param_name => paginator.prev_page)),
+          class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+    <% else %>
+      <button type="button" 
+              class="px-4 py-2 bg-blue-500 text-white rounded opacity-50 cursor-not-allowed"
+      >
+        Previous
+      </button>
+    <% end %>
+
+    <% if paginator.next_page %>
+      <%= link_to 'Next', url_for(params.to_unsafe_h.merge(param_name => paginator.next_page)),
+          class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" %>
+    <% else %>
+      <button type="button" 
+              class="px-4 py-2 bg-blue-500 text-white rounded opacity-50 cursor-not-allowed"
+      >
+        Next
+      </button>
+    <% end %>
+  </div>
+<% end %>

@@ -1,7 +1,10 @@
 class QuestionsController < ApplicationController
-  before_action :set_quiz, only: [:new, :create]
+  include AuthorizesQuizAuthor
+  
+  before_action :set_quiz, only: [:new, :create, :index, :edit, :update]
   before_action :set_question, only: [:destroy, :edit, :update]
-
+  before_action :authenticate_user!
+  before_action :authorize_quiz_owner, only: [:new, :create, :edit, :update, :index]
 
   def index
   end
@@ -10,10 +13,10 @@ class QuestionsController < ApplicationController
     @question = @quiz.questions.new(question_params)
 
     if @question.save
-      flash.notice = "Question was successfully created."
-      redirect_to quiz_url(@quiz)
+      flash[:notice] = "Question successfully created."
+      redirect_to quiz_questions_path(@quiz)
     else
-      @question.errors.full_messages
+      flash.now[:alert] = @question.errors.full_messages.to_sentence
       render :new, status: :unprocessable_entity
     end
   end
@@ -24,30 +27,35 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question.destroy!
-    redirect_to quiz_path(@question.quiz), notice: "Deleted"
-  end 
+    @question.destroy
+    redirect_to quiz_path(@question.quiz), notice: "Question successfully deleted."
+  end
 
   def edit
   end
 
   def update
     if @question.update(question_params)
-      redirect_to quiz_url(@question.quiz), notice: "Question was successfully updated."
+      flash[:notice] = "Question successfully updated."
+      redirect_to quiz_url(@question.quiz)
     else
+      flash.now[:alert] = @question.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_entity
     end
-  end 
+  end
 
   private
 
   def set_quiz
-    @quiz = Quiz.find(params[:quiz_id])
+    @quiz = Quiz.find(params[:quiz_id]) if params[:quiz_id]
   end
 
   def set_question
     @question = Question.find(params[:id])
+    @quiz = @question.quiz
   end
+
+
 
   def question_params
     params.require(:question).permit(:question_text, answers_attributes: [:id, :answer_text, :correct, :_destroy])

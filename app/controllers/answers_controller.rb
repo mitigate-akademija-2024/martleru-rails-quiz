@@ -1,15 +1,14 @@
 class AnswerController < ApplicationController
     before_action :set_quiz, only: [:new, :create]
-  
-    def index
-    end
+    before_action :authenticate_user!, only: [:new, :create]
 
-    def show
+    def index
     end
 
     def create
       @question = @quiz.questions.new(question_params)
-  
+      @user = current_user
+      
       if @question.save
         flash.notice = "Something"
         redirect_to quiz_url(@quiz)
