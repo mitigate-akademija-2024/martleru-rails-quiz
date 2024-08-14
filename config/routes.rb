@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+
   devise_for :users, controllers: { registrations: 'users/registrations' }
 
   root to: "quizzes#index"
@@ -11,6 +13,9 @@ Rails.application.routes.draw do
 
     get 'search_quiz', on: :collection
 
+    # Singular unit
+    resource :quizlink, only: [:show, :create]
+
     resources :testimonials, only: [:index, :create, :destroy]
     resources :questions, shallow: true
   
@@ -19,7 +24,6 @@ Rails.application.routes.draw do
     get 'export_results', on: :member
     put "publish", on: :member
   end
-
   resources :users, only: [:show]
   
   # Health check route

@@ -11,6 +11,7 @@
             <%= button_to "Publish", publish_quiz_path, method: :put %>
 
 
+            <%= link_to "Share quiz", quiz_quizlink_path(@quiz.id) %>
 
           </h2>
           <% if quiz.owned_by?(current_user) %>
