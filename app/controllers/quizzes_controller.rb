@@ -18,6 +18,7 @@ class QuizzesController < ApplicationController
   # GET /quizzes/:id
   def show
     @user_scores = @quiz.user_scores.includes(:user)
+    # .includes(:user) prevents N+1 Problem ( queries 10 scores with associated user, not 10 scores and then for each score a user )
     @top_scores = @quiz.user_scores.includes(:user).order(score: :desc).limit(10)
     
     @testimonial = Testimonial.new

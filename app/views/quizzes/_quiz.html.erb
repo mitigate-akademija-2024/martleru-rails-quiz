@@ -6,13 +6,6 @@
           <h2 class="break-words font-bold text-3xl text-gray-800">
             <%= quiz.title %>
 
-            <%= quiz.published %>
-
-            <%= button_to "Publish", publish_quiz_path, method: :put %>
-
-
-            <%= link_to "Share quiz", quiz_quizlink_path(@quiz.id) %>
-
           </h2>
           <% if quiz.owned_by?(current_user) %>
             <div class="flex items-baseline gap-2">
@@ -22,8 +15,11 @@
               <%= link_to edit_quiz_path(@quiz), class: "text-indigo-600 hover:text-indigo-800" do %>
                 <%= raw edit_quiz_svg(26, 26) %> 
               <% end %>
+              <%= button_to "Publish", publish_quiz_path, method: :put %>
             </div>
           <% end %>
+              <%= link_to "Share quiz", quiz_quizlink_path(@quiz.id) %>
+
         </div>
         <hr class="my-4 border-gray-300">
         <p class="break-words text-lg text-gray-700">

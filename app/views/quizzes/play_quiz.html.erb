@@ -27,15 +27,17 @@
     option.addEventListener('click', function() {
       const questionId = this.getAttribute('data-question-id');
 
-      // Find all options within the same question
       document.querySelectorAll(`.answer-option[data-question-id="${questionId}"]`).forEach(function(o) {
         o.classList.remove('bg-green-100');
+        o.classList.remove('border');
+        o.classList.remove('border-green-600');
         o.classList.add('bg-gray-100');
       });
 
-      // Check if the clicked option's radio button is selected
       if (this.querySelector('input[type=radio]').checked) {
         this.classList.add('bg-green-100');
+        this.classList.add('border');
+        this.classList.add('border-green-600');
         this.classList.remove('bg-gray-100');
       }
     });
