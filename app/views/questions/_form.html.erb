@@ -1,7 +1,7 @@
 <%= form_with(model: question.persisted? ? question : [question.quiz, question], 
               data: { controller: 'nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper' }, 
-              class: "bg-white p-6 rounded-lg shadow-md") do |form| %>
-  
+              class: "#{get_form_class} bg-white p-6 rounded-lg shadow-md") do |form| %>
+
   <template data-nested-form-target="template">
     <%= form.fields_for :answers, Answer.new, child_index: 'NEW_RECORD' do |answer_fields| %>
       <%= render "answer_form", form: answer_fields %>
@@ -12,33 +12,27 @@
     <h2 class="text-xl font-semibold text-gray-800 mb-2">Question</h2>
     
     <%= form.text_field :question_text, placeholder: "Enter your question here", 
-                        class: "w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2" %>
+                        class: "w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2" %>
   </div>
 
-   <button type="button" data-action="nested-form#add" 
-            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-      Add Answer
-    </button>
+  <button type="button" data-action="nested-form#add" 
+          class="inline-block rounded-md bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer">
+    Add
+  </button>
 
   <div class="space-y-6">
     <%= form.fields_for :answers do |ff| %>
       <%= render "answer_form", form: ff %>
     <% end %>
-
     <div data-nested-form-target="target" class="space-y-4"></div>
-
-   
   </div>
 
   <div class="mt-8 flex justify-between items-center">
-    <%= link_to "Back to quiz", @quiz, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
-
-    <%= form.submit "Save Question", 
-                    class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    <%= link_to "Back", :back, class: "inline-block rounded-md bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer" %>
+    <%= form.submit "Save Question", class: "inline-block rounded-md bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer" %>
   </div>
-
-</div>
 <% end %>
+
 
 
 <!--question.persisted ? question : [question.quiz, question] pačeko vai DB ir izveiods jautājums - ja ir tad sūta tikai Question ja nē tad arī question.quiz 

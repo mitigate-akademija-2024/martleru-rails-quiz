@@ -3,53 +3,40 @@ require 'csv'
 class QuizzesController < ApplicationController
   include AuthorizesQuizAuthor
   include CheckIfQuizPublished
+  before_action :authenticate_user!, except: %i[index show play_quiz submit_quiz results export_results search_quiz] 
 
-  before_action :set_quiz, only: %i[show edit update destroy play_quiz submit_quiz results export_results publish]
+  before_action :set_quiz, only: %i[show edit update destroy play_quiz submit_quiz results export_results publish export_scores]
+  before_action :set_top_scores, only: %i[show export_scores]  
   before_action :set_quizzes, only: %i[index search_quiz]
   before_action :ensure_quiz_has_questions, only: %i[play_quiz submit_quiz results export_results]
-  before_action :authenticate_user!, except: %i[index show play_quiz submit_quiz results export_results]
   before_action :authorize_quiz_owner, only: %i[publish edit update]
   before_action :check_if_published, only: %i[edit update]
 
-  # GET /quizzes
   def index
   end
 
-  # GET /quizzes/:id
   def show
-    @user_scores = @quiz.user_scores.includes(:user)
-    # .includes(:user) prevents N+1 Problem ( queries 10 scores with associated user, not 10 scores and then for each score a user )
-    @top_scores = @quiz.user_scores.includes(:user).order(score: :desc).limit(10)
-    
     @testimonial = Testimonial.new
   end
 
-  # GET /quizzes/new
   def new
     @quiz = Quiz.new
   end
 
-  # POST /quizzes
   def create
     @quiz = Quiz.new(quiz_params)
     @quiz.user = current_user
 
-    respond_to do |format|
-      if @quiz.save
-        format.html { redirect_to @quiz, notice: "Quiz was successfully created." }
-        format.json { render :show, status: :created, location: @quiz }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @quiz.errors, status: :unprocessable_entity }
-      end
+    if @quiz.save
+      redirect_to @quiz, notice: "Quiz was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # GET /quizzes/:id/edit
   def edit
   end
 
-  # PATCH/PUT /quizzes/:id
   def update
     if @quiz.update(quiz_params)
       redirect_to @quiz, notice: "Quiz was successfully updated."
@@ -58,20 +45,14 @@ class QuizzesController < ApplicationController
     end
   end
   
-  # DELETE /quizzes/:id
   def destroy
     @quiz.destroy
-    respond_to do |format|
-      format.html { redirect_to quizzes_url, notice: "Quiz was successfully deleted." }
-      format.json { head :no_content }
-    end
+    redirect_to quizzes_url, notice: "Quiz was successfully deleted."
   end
 
-  # GET /quizzes/:id/play
   def play_quiz
   end
 
-  # POST /quizzes/:id/submit_quiz
   def submit_quiz
     answers_params = params.fetch(:answers, {})
     score = 0
@@ -82,7 +63,7 @@ class QuizzesController < ApplicationController
       score += 1 if answer&.correct
     end
   
-    user = current_user || find_anonymous_user
+    user = current_user || User.find_by(email: "anonymous@mitigate.dev")
   
     @user_score = UserScore.new(quiz: @quiz, user: user, score: score, answers: answers_params)
   
@@ -93,20 +74,18 @@ class QuizzesController < ApplicationController
     end
   end
   
-  # GET /quizzes/:id/results
   def results
     @user_score = UserScore.find_by(id: params[:attempt_id])
     if @user_score && @user_score.quiz_id == @quiz.id
       @questions = @quiz.questions.includes(:answers)
     else
-      redirect_to play_quiz_quiz_path(@quiz), alert: "Results not found."
+      redirect_to play_quiz_path(@quiz), alert: "Results not found."
     end
   end
   
-  # GET /quizzes/:id/export_results
   def export_results
     @user_score = UserScore.find_by(quiz: @quiz)
-    # Check if current_user is present, otherwise use a default id
+
     if @user_score
       csv_data = CSV.generate(headers: true) do |csv|
         csv << ['Question', 'Your Answer', 'Correct Answer', 'Correct?']
@@ -131,6 +110,22 @@ class QuizzesController < ApplicationController
     end
   end
 
+  def export_scores
+    if @quiz.present? && @top_scores.present?
+      csv_data = CSV.generate(headers: true) do |csv|
+        csv << ['Username', 'Score', 'Date']
+  
+        @top_scores.each do |score|
+          csv << [score.user.username, score.score, score.created_at]
+        end
+      end
+  
+      send_data csv_data, filename: "top_quiz_results_#{@quiz.id}.csv", type: 'text/csv'
+    else
+      redirect_to quizzes_path, alert: 'Quiz not found or no top results available for export.'
+    end
+  end
+
   def search_quiz
     if params[:title].present?
       @quizzes = @quizzes.where('title LIKE ?', "%#{params[:title]}%")
@@ -151,13 +146,11 @@ class QuizzesController < ApplicationController
   end
 
   def set_quiz
-    @quiz = Quiz.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      redirect_to quizzes_path, alert: "Quiz not found."
+    @quiz = Quiz.find_by(id: params[:id])
   end
 
-  def find_anonymous_user
-    User.find_by(email: "anonymous@mitigate.dev")
+  def set_top_scores
+    @top_scores = @quiz.user_scores.includes(:user).order(score: :desc).limit(10)
   end
 
   def ensure_quiz_has_questions

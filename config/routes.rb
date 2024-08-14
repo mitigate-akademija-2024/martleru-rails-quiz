@@ -22,7 +22,8 @@ Rails.application.routes.draw do
     get 'play_quiz', on: :member
     post 'submit_quiz', on: :member
     get 'export_results', on: :member
-    put "publish", on: :member
+    get 'export_scores', on: :member
+    put 'publish', on: :member
   end
   resources :users, only: [:show]
   

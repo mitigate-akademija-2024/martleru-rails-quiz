@@ -1,31 +1,46 @@
-<header class="bg-gray-800 px-4 py-10 relative z-20">
-  <nav class="container mx-auto flex justify-between items-center">
-    <div class="text-white text-lg font-semibold">
-      <%= link_to "Quizzes on Rails", root_path, class: "hover:text-gray-300" %>
+<header class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 px-6 py-8 relative z-20 shadow-lg">
+  <nav class="container mx-auto flex flex-col lg:flex-row items-center lg:items-center gap-4 lg:gap-0">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between w-full">
+      <div class="flex flex-grow items-center lg:items-center justify-between lg:justify-between w-full">
+        <div class="flex lg:flex-grow-0 flex-shrink-0 lg:order-1">
+          <% if user_signed_in? %>
+            <div class="flex gap-1 lg:gap-6 items-center">
+              <div class="flex items-baseline">
+                <%= button_to destroy_user_session_path, method: :delete, class: "hover:text-indigo-400 transition-colors duration-300" do %>
+                  <%= image_tag 'log_out.svg', alt: 'Log Out', width: 53, height: 53 %>
+                <% end %>
+              </div>
+              <div class="flex items-baseline gap-1">    
+                <div class="flex items-baseline">
+                  <%= link_to edit_user_registration_path, class: "hover:text-indigo-400 transition-colors duration-300" do %>
+                    <%= image_tag 'user_settings.svg', alt: 'Settings', width: 18, height: 18 %>
+                  <% end %>
+                </div>
+                <div class="flex items-baseline text-white text-base lg:text-xl font-medium">
+                  <%= link_to "Welcome, #{current_user.username}", user_path(current_user), class: "hover:text-indigo-400 transition-colors duration-300 flex items-center" %>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <div class="flex gap-2 lg:gap-6 items-baseline">
+              <div>
+                <%= link_to "Sign Up", new_user_registration_path, class: "text-white text-lg font-medium hover:text-indigo-400 transition-colors duration-300" %>
+              </div>
+              <div>
+                <%= link_to "Login", new_user_session_path, class: "text-white text-lg font-medium hover:text-indigo-400 transition-colors duration-300" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <div class="text-white text-2xl font-bold tracking-wide flex-grow flex justify-end lg:justify-center lg:w-2/3 lg:order-2">
+          <%= link_to "Quizzes on Rails", root_path, class: "hover:text-indigo-400 transition-colors duration-300 text-3xl" %>
+        </div>
+      </div>
+      <div class="w-full lg:max-w-sm flex justify-center lg:justify-end lg:order-3 mt-3 lg:mt-0">
+        <div class="w-full">
+          <%= render 'quizzes/partials/search_form' %>
+        </div>
+      </div>
     </div>
-    <ul class="flex space-x-4">
-      <% if user_signed_in? %>
-        <li class="text-white">
-          <%= link_to "Welcome, #{current_user.username}", user_path(current_user), class: "hover:text-gray-300" %>
-        </li>
-        <li>
-          <%= link_to edit_user_registration_path do%>
-              <%= raw user_settings_svg(24, 24) %> 
-          <% end %>
-        </li>
-        <li>
-          <%= button_to destroy_user_session_path, method: :delete do %>
-            <%= raw log_out_svg(24, 24) %> 
-          <% end %>
-        </li>
-      <% else %>
-        <li>
-          <%= link_to "Sign Up", new_user_registration_path, class: "text-white hover:text-gray-300" %>
-        </li>
-        <li>
-          <%= link_to "Login", new_user_session_path, class: "text-white hover:text-gray-300" %>
-        </li>
-      <% end %>
-    </ul>
   </nav>
 </header>

@@ -1,0 +1,31 @@
+<div class="flex items-center justify-between mb-4">
+  <h3 class="text-2xl font-semibold text-gray-800">My quizzes</h3>
+  <%= link_to "Create Quiz", new_quiz_path, class: get_btn_class %>
+</div>
+<% if @quizzes.any? %>
+  <div class="overflow-x-auto rounded-lg shadow-md">
+    <table id="quizzes" class="min-w-full divide-y divide-gray-200 bg-white text-sm">
+      <thead class="bg-gray-100 text-left text-gray-600">
+        <tr>
+          <th class="whitespace-nowrap px-6 py-3 font-medium">Quiz name</th>
+          <th class="whitespace-nowrap px-6 py-3 font-medium">Date</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @quizzes.each do |quiz| %>
+          <tr class="hover:bg-gray-50">
+            <td class="whitespace-nowrap px-6 py-4 text-gray-800">
+              <%= link_to "#{quiz.title}", quiz_path(quiz.id), class: "text-indigo-600 hover:text-indigo-800" %>
+            </td>
+            <td class="whitespace-nowrap px-6 py-4 text-gray-800"><%= format_date("month", quiz.created_at) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-4">
+    <%= render 'kaminari/paginator', paginator: @quizzes, paginator_param_name: :quizzes_page %>
+  </div>
+<% else %>
+  <p class="text-gray-500 px-4 py-2">No quizzes available.</p>
+<% end %>

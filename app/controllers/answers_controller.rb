@@ -8,13 +8,6 @@ class AnswerController < ApplicationController
     def create
       @question = @quiz.questions.new(question_params)
       @user = current_user
-      
-      if @question.save
-        flash.notice = "Something"
-        redirect_to quiz_url(@quiz)
-      else
-        flash.now.alert = @question.errors.full_messages.to_sentence
-      end 
     end
   
     def new

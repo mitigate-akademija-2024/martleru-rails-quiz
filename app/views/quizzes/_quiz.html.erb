@@ -1,76 +1,49 @@
-<section id="<%= dom_id(quiz) %>" class="px-4 py-6 lg:px-8 lg:py-8 bg-gray-50">
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <div class="flex flex-col space-y-8">
-      <div class="flex flex-col justify-between mb-9">
-        <div class="flex gap-3 items-baseline">
-          <h2 class="break-words font-bold text-3xl text-gray-800">
-            <%= quiz.title %>
-
-          </h2>
+<div id="<%= dom_id(quiz) %>" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div class="flex flex-col space-y-8">
+    <div class="flex flex-col space-y-4 mb-6">
+      <div class="flex justify-between items-baseline">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 break-words">
+          <%= quiz.title %>
+        </h2>
+        <div class="flex flex-grow justify-end items-baseline space-x-6">
           <% if quiz.owned_by?(current_user) %>
-            <div class="flex items-baseline gap-2">
-              <%= button_to quiz, method: :delete, class: "text-red-600 hover:text-red-800" do %>
-                <%= raw destroy_quiz_svg(24, 24) %>
+            <div class="flex items-stretch space-x-2">
+              <%= button_to quiz, method: :delete, class: 'inline-flex items-center rounded border border-red-600 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white focus:outline-none focus:ring' do %>
+                <%= image_tag 'delete.svg', alt: 'Delete', width: 30, height: 30 %>
               <% end %>
-              <%= link_to edit_quiz_path(@quiz), class: "text-indigo-600 hover:text-indigo-800" do %>
-                <%= raw edit_quiz_svg(26, 26) %> 
+              <% if !quiz.published %>
+                <%= link_to edit_quiz_path(@quiz), class: 'inline-flex items-center rounded border border-indigo-600 px-3 py-1 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring' do %>
+                  <%= image_tag 'edit.svg', alt: 'Edit', width: 30, height: 30 %>
+                <% end %>
+                <%= button_to "Publish", publish_quiz_path, method: :put, class: get_btn_class %>
               <% end %>
-              <%= button_to "Publish", publish_quiz_path, method: :put %>
             </div>
           <% end %>
-              <%= link_to "Share quiz", quiz_quizlink_path(@quiz.id) %>
-
+          <%= link_to quiz_quizlink_path(@quiz.id) do %>
+                  <%= image_tag 'share.svg', alt: 'Delete', width: 30, height: 30 %>
+          <% end %>
         </div>
-        <hr class="my-4 border-gray-300">
-        <p class="break-words text-lg text-gray-700">
-          <%= quiz.description %>
-        </p>
-        <% if quiz.questions.size > 0 %>
-          <div>
-            <%= link_to "Play Quiz", play_quiz_quiz_path(quiz), class: get_btn_class %>
-          </div>
-        <% end %>
       </div>
-
-      <div class="mt-8">
-        <%= render 'quizzes/partials/testimonials_form', quiz: @quiz, testimonial: @testimonial %>
-      </div>
-
-      <% if quiz.testimonials.any? %>
-        <%= render 'quizzes/partials/testimonials', quiz: @quiz %>
-      <% else %>
-        <p class="text-gray-500 py-2">This quiz does not have comments yet</p>
+      <hr class="my-4 border-gray-300">
+      <p class="text-lg text-gray-700 break-words">
+        <%= quiz.description %>
+      </p>
+      <% if quiz.questions.size > 0 %>
+        <div class="flex justify-center mt-2">
+          <%= link_to "Play Quiz", play_quiz_quiz_path(quiz), class: get_play_button %>
+        </div>
       <% end %>
     </div>
-
-    <div class="w-full">
-      <h3 class="text-2xl font-semibold mb-6">Highest Scores</h3>
-      <% if quiz.user_scores.size > 0 %>
-        <div class="overflow-x-auto rounded-lg border border-gray-200">
-          <table id="quizzes" class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-            <thead class="text-left">
-              <tr>
-                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">E-mail</th>
-                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Points</th>
-                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Result</th>
-                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Time</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <% @top_scores.each do |top_score| %>
-                <tr>
-                  <td class="whitespace-nowrap px-4 py-2 text-gray-900"><%= top_score.user&.email || "Anonymous" %></td>
-                  <td class="whitespace-nowrap px-4 py-2 text-gray-900"><%= top_score.score %></td>
-                  <td class="whitespace-nowrap px-4 py-2 text-gray-900"><%= "#{(top_score.score.to_f / quiz.questions.count * 100).round(2)}%" %></td>
-                  <td class="whitespace-nowrap px-4 py-2 text-gray-900"><%= format_date("date_time", top_score.created_at) %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <p class="text-gray-500 px-4 py-2">No available results.</p>
-      <% end %>
+    <div class="mt-8">
+      <%= render 'quizzes/partials/testimonials_form', quiz: @quiz, testimonial: @testimonial %>
     </div>
+    <% if quiz.testimonials.any? %>
+      <%= render 'quizzes/partials/testimonials', quiz: @quiz %>
+    <% else %>
+      <p class="text-gray-500 py-2">This quiz does not have comments yet.</p>
+    <% end %>
   </div>
-</section>
+  <div>
+    <%= render 'quizzes/partials/highscores', quiz: @quiz, top_scores: @top_scores %>
+  </div>
+</div>

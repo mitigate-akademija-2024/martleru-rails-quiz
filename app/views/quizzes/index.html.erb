@@ -9,9 +9,7 @@
       </p>
     </div>
 
-    <%= render 'quizzes/partials/search_form' %>
-
-    <div class="mt-8">
+    <div class="mt-16">
       <% if @quizzes.any? %>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           <% @quizzes.each do |quiz| %>
@@ -19,7 +17,7 @@
           <% end %>
         </div>
       <% else %>
-        <p class="text-gray-500">No quizzes found.</p>
+        <p class="flex justify-center text-gray-500 text-sm lg:text-xl font-bold">No quizzes found.</p>
       <% end %>
     </div>
   </div>

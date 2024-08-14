@@ -1,11 +1,11 @@
 <%= form_with(model: quiz, class: "#{get_form_class} bg-white p-6 rounded-lg shadow-md") do |form| %>
-
-  <!-- Formas title - tiek padots kā "local" -->
   <% if form_action == "create" %>
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">Create a New Quiz</h1>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create a Quiz</h1>
   <% elsif form_action == "edit" %>
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Quiz</h1>
-    <%= link_to 'Manage questions', quiz_questions_path(@quiz), class: get_btn_class %>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Edit Quiz</h1>
+    <div class="mb-6 text-center">
+      <%= link_to 'Manage questions', quiz_questions_path(@quiz), class: get_btn_class %>
+    </div>
   <% end %>
 
   <div class="mb-4">

@@ -1,0 +1,33 @@
+<div class="w-full">
+  <div class="flex justify-between mb-6">
+    <h3 class="text-2xl font-semibold text-gray-800">Highest Scores</h3>
+    <%= link_to "Export to CSV", export_scores_quiz_path(@quiz), class: get_btn_class %>
+  </div>
+  
+  <% if quiz.user_scores.size > 0 %>
+    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-md">
+      <table id="quizzes" class="min-w-full divide-y divide-gray-200 bg-white text-sm">
+        <thead class="bg-gray-100 text-left text-gray-600">
+          <tr>
+            <th class="whitespace-nowrap px-6 py-3 font-medium">E-mail</th>
+            <th class="whitespace-nowrap px-6 py-3 font-medium">Points</th>
+            <th class="whitespace-nowrap px-6 py-3 font-medium">Result</th>
+            <th class="whitespace-nowrap px-6 py-3 font-medium">Time</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <% @top_scores.each do |top_score| %>
+            <tr class="hover:bg-gray-50">
+              <td class="whitespace-nowrap px-6 py-4 text-gray-800"><%= top_score.user&.email || "Anonymous" %></td>
+              <td class="whitespace-nowrap px-6 py-4 text-gray-800"><%= top_score.score %></td>
+              <td class="whitespace-nowrap px-6 py-4 text-gray-800"><%= "#{(top_score.score.to_f / quiz.questions.count * 100).round(2)}%" %></td>
+              <td class="whitespace-nowrap px-6 py-4 text-gray-800"><%= format_date("date_time", top_score.created_at) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-gray-500 px-4 py-2">No available results.</p>
+  <% end %>
+</div>
