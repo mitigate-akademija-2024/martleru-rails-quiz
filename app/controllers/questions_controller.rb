@@ -1,10 +1,12 @@
 class QuestionsController < ApplicationController
   include AuthorizesQuizAuthor
+  include CheckIfQuizPublished
   
   before_action :set_quiz, only: [:new, :create, :index, :edit, :update]
   before_action :set_question, only: [:destroy, :edit, :update]
   before_action :authenticate_user!
   before_action :authorize_quiz_owner, only: [:new, :create, :edit, :update, :index]
+  before_action :check_if_published, only: %i[edit update create new destroy]
 
   def index
   end
@@ -54,8 +56,6 @@ class QuestionsController < ApplicationController
     @question = Question.find(params[:id])
     @quiz = @question.quiz
   end
-
-
 
   def question_params
     params.require(:question).permit(:question_text, answers_attributes: [:id, :answer_text, :correct, :_destroy])

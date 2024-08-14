@@ -1,4 +1,4 @@
-module  
+module CheckIfQuizPublished
     extend ActiveSupport::Concern
 
     def check_if_published

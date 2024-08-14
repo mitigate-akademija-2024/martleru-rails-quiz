@@ -13,8 +13,6 @@ class QuizzesController < ApplicationController
 
   # GET /quizzes
   def index
-    @title = "Quick Quiz Challenge"
-    @description = "Test your knowledge with our fun and engaging quizzes! Whether you're brushing up on trivia or challenging yourself with new topics, our quizzes are designed to be both educational and entertaining. Dive in and see how much you can score!"
   end
 
   # GET /quizzes/:id
