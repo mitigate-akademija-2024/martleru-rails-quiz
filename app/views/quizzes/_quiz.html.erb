@@ -1,49 +1,59 @@
-<div id="<%= dom_id(quiz) %>" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-  <div class="flex flex-col space-y-8">
-    <div class="flex flex-col space-y-4 mb-6">
-      <div class="flex justify-between items-baseline">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 break-words">
-          <%= quiz.title %>
-        </h2>
-        <div class="flex flex-grow justify-end items-baseline space-x-6">
-          <% if quiz.owned_by?(current_user) %>
-            <div class="flex items-stretch space-x-2">
-              <%= button_to quiz, method: :delete, class: 'inline-flex items-center rounded border border-red-600 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white focus:outline-none focus:ring' do %>
-                <%= image_tag 'delete.svg', alt: 'Delete', width: 30, height: 30 %>
-              <% end %>
-              <% if !quiz.published %>
-                <%= link_to edit_quiz_path(@quiz), class: 'inline-flex items-center rounded border border-indigo-600 px-3 py-1 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring' do %>
-                  <%= image_tag 'edit.svg', alt: 'Edit', width: 30, height: 30 %>
+<div id="<%= dom_id(quiz) %>" class="flex flex-col gap-4">
+  <% if quiz.owned_by?(current_user) && !quiz.published %>
+    <div class="text-left">
+      <%= button_to "Publish", publish_quiz_path, method: :put, class: get_btn_class %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="flex flex-col space-y-8">
+      <div class="flex flex-col space-y-4 mb-6">
+        <div class="flex justify-between items-baseline">
+          <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 break-words">
+            <%= quiz.title %>
+          </h2>
+          <div class="flex flex-grow justify-end items-baseline space-x-6">
+            <% if quiz.owned_by?(current_user) %>
+              <div class="flex space-x-2">
+                <%= button_to quiz, method: :delete, class: 'inline-flex items-center rounded border border-red-600 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white focus:outline-none focus:ring' do %>
+                  <%= image_tag 'delete.svg', alt: 'Delete', width: 20, height: 20 %>
                 <% end %>
-                <%= button_to "Publish", publish_quiz_path, method: :put, class: get_btn_class %>
+                <% if !quiz.published %>
+                  <%= link_to edit_quiz_path(@quiz), class: 'inline-flex items-center rounded border border-indigo-600 px-3 py-1 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring' do %>
+                    <%= image_tag 'edit.svg', alt: 'Edit', width: 20, height: 20 %>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if quiz.published %>
+              <%= link_to quiz_quizlink_path(@quiz.id), class: 'inline-flex items-center rounded border border-green-600 px-3 py-1 text-sm font-medium text-green-600 hover:bg-green-600 hover:text-white focus:outline-none focus:ring' do %>
+                <%= image_tag 'share.svg', alt: 'Share', width: 20, height: 20 %>
               <% end %>
-            </div>
-          <% end %>
-          <%= link_to quiz_quizlink_path(@quiz.id) do %>
-                  <%= image_tag 'share.svg', alt: 'Delete', width: 30, height: 30 %>
-          <% end %>
+            <% end %>
+          </div>
         </div>
+        <hr class="my-4 border-gray-300">
+        <p class="text-lg text-gray-700 break-words">
+          <%= quiz.description %>
+        </p>
+        <% if quiz.questions.size > 0 %>
+          <div class="flex justify-center mt-2">
+            <%= link_to "Play Quiz", play_quiz_quiz_path(quiz), class: get_play_button %>
+          </div>
+        <% end %>
       </div>
-      <hr class="my-4 border-gray-300">
-      <p class="text-lg text-gray-700 break-words">
-        <%= quiz.description %>
-      </p>
-      <% if quiz.questions.size > 0 %>
-        <div class="flex justify-center mt-2">
-          <%= link_to "Play Quiz", play_quiz_quiz_path(quiz), class: get_play_button %>
-        </div>
+      <div class="mt-8">
+        <%= render 'quizzes/partials/testimonials_form', quiz: @quiz, testimonial: @testimonial %>
+      </div>
+      <% if quiz.testimonials.any? %>
+        <%= render 'quizzes/partials/testimonials', quiz: @quiz %>
+      <% else %>
+        <p class="text-gray-500 py-2">This quiz does not have comments yet.</p>
       <% end %>
     </div>
-    <div class="mt-8">
-      <%= render 'quizzes/partials/testimonials_form', quiz: @quiz, testimonial: @testimonial %>
+    <div>
+      <%= render 'quizzes/partials/highscores', quiz: @quiz, top_scores: @top_scores %>
     </div>
-    <% if quiz.testimonials.any? %>
-      <%= render 'quizzes/partials/testimonials', quiz: @quiz %>
-    <% else %>
-      <p class="text-gray-500 py-2">This quiz does not have comments yet.</p>
-    <% end %>
-  </div>
-  <div>
-    <%= render 'quizzes/partials/highscores', quiz: @quiz, top_scores: @top_scores %>
   </div>
 </div>
