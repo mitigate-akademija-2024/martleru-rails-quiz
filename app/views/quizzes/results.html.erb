@@ -1,6 +1,8 @@
 <section class="px-6 py-8">
   <div class="flex justify-between mb-6">
-    <h3 class="text-2xl font-semibold">Quiz questions (<%= @quiz.questions.size %>)</h3>
+    <h3 class="text-2xl font-semibold">
+      You scored <%= @user_score.score %> out of <%= @quiz.questions.count %> questions correctly.
+    </h3>
     <%= link_to "Export Results to CSV", export_results_quiz_path(@quiz), class: get_btn_class %>
   </div>
 
