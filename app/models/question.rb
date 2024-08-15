@@ -7,15 +7,17 @@ class Question < ApplicationRecord
   validates :question_text, presence: true
   validate :validate_answers
 
+  before_save :normalize_question_text
+
+  protected
+
   def validate_answers
     unless answers.any?(&:correct?)
       errors.add(:answers, :no_correct, message: "At least one answer must be correct")
     end
   end
-  
+
+  def normalize_question_text
+    self.question_text = question_text.to_s.squish.capitalize
+  end
 end
-
-#dependent - izies cauri tiem visiem has_many - šajā gadījumā visām atbildēm kas piesaistītas jautājumam un nodzēsīs
-
-
-

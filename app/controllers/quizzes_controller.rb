@@ -3,7 +3,7 @@ require 'csv'
 class QuizzesController < ApplicationController
   include AuthorizesQuizAuthor
   include CheckIfQuizPublished
-  before_action :authenticate_user!, except: %i[index show play_quiz submit_quiz results export_results search_quiz] 
+  before_action :authenticate_user!, except: %i[index show play_quiz submit_quiz results export_results search_quiz export_scores] 
 
   before_action :set_quiz, only: %i[show edit update destroy play_quiz submit_quiz results export_results publish export_scores]
   before_action :set_top_scores, only: %i[show export_scores]  
@@ -163,3 +163,4 @@ class QuizzesController < ApplicationController
     params.require(:quiz).permit(:title, :description)
   end
 end
+

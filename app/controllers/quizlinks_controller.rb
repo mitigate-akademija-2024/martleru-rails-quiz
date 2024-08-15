@@ -2,6 +2,9 @@ class QuizlinksController < ApplicationController
   before_action :set_quiz, only: [:create, :show]
   
     def show
+      unless @quiz.published
+        redirect_to @quiz
+      end
     end
 
     def create

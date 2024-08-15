@@ -1,5 +1,4 @@
 class AnswerController < ApplicationController
-    before_action :set_quiz, only: [:new, :create]
     before_action :authenticate_user!, only: [:new, :create]
 
     def index
@@ -12,10 +11,6 @@ class AnswerController < ApplicationController
   
     def new
       @question = @quiz.questions.new
-    end
-  
-    def set_answer
-        @answer = Answer.find(params[:quiz_id])
     end
   
     def question_params
